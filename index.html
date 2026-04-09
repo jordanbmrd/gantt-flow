@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GanttFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-brand">
+        <svg width="26" height="20" viewBox="0 0 26 20" fill="none">
+          <rect x="0" y="0" width="11" height="6" rx="3" fill="#4F8EF7"/>
+          <rect x="8" y="7" width="14" height="6" rx="3" fill="#9B6CF7"/>
+          <rect x="3" y="14" width="13" height="6" rx="3" fill="#6BC47A"/>
+        </svg>
+        <span class="brand-name">GanttFlow</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" id="addCheckpointBtn" title="Add a checkpoint">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="2" x2="12" y2="22"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          Checkpoint
+        </button>
+        <button class="btn btn-ghost btn-toggle active" id="todayBtn" title="Toggle Today marker">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+            <line x1="12" y1="14" x2="12" y2="18"/>
+          </svg>
+          Today
+        </button>
+        <button class="btn btn-ghost" id="copyBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+        <button class="btn btn-primary" id="exportBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export PNG
+        </button>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <path d="M16 2v4M8 2v4M3 10h18"/>
+            <line x1="7" y1="15" x2="11" y2="15"/>
+            <line x1="7" y1="18" x2="14" y2="18"/>
+          </svg>
+        </div>
+        <h3 class="empty-title">No tasks yet</h3>
+        <p class="empty-desc">Add your first task using the form below to build your Gantt chart.</p>
+      </div>
+
+      <div id="ganttWrapper" class="gantt-wrapper" style="display:none">
+        <div class="gantt-sidebar" id="ganttSidebar">
+          <div class="sidebar-header">Tasks</div>
+          <div id="taskList" class="task-list"></div>
+        </div>
+        <div class="gantt-chart-area" id="ganttChartArea">
+          <div id="svgContainer" class="svg-container"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Form -->
+    <footer class="form-panel">
+      <div class="form-inner">
+        <div class="form-fields">
+          <div class="field field-name">
+            <label class="field-label">Task name</label>
+            <input type="text" id="fName" class="field-input" placeholder="e.g. Design Phase" autocomplete="off">
+          </div>
+          <div class="field field-month">
+            <label class="field-label">Start</label>
+            <select id="fMonth" class="field-input field-select">
+              <option value="0">January</option><option value="1">February</option>
+              <option value="2">March</option><option value="3">April</option>
+              <option value="4">May</option><option value="5">June</option>
+              <option value="6">July</option><option value="7">August</option>
+              <option value="8">September</option><option value="9">October</option>
+              <option value="10">November</option><option value="11">December</option>
+            </select>
+          </div>
+          <div class="field field-year">
+            <label class="field-label">Year</label>
+            <input type="number" id="fYear" class="field-input" min="2020" max="2040">
+          </div>
+          <div class="field field-dur">
+            <label class="field-label">Duration (mo.)</label>
+            <input type="number" id="fDuration" class="field-input" min="1" max="120" placeholder="3">
+          </div>
+          <div class="field field-color">
+            <label class="field-label">Color</label>
+            <div class="color-picker" id="colorPicker"></div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="cancelBtn" style="display:none">Cancel</button>
+          <button class="btn btn-primary" id="submitBtn">Add Task</button>
+        </div>
+      </div>
+      <div id="formMsg" class="form-msg" style="display:none"></div>
+    </footer>
+
+  </div>
+
+  <!-- Checkpoint Modal -->
+  <div class="modal-overlay" id="cpOverlay">
+    <div class="modal" id="cpModal">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px">
+            <line x1="12" y1="2" x2="12" y2="22"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          New Checkpoint
+        </h3>
+        <button class="modal-close" id="cpCloseBtn" title="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label class="field-label">Label</label>
+          <input type="text" id="cpName" class="field-input" placeholder="e.g. Beta Release, Go-live…" autocomplete="off">
+        </div>
+        <div id="cpMsg" class="form-msg" style="display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cpCancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="cpSubmitBtn">Place on chart</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
